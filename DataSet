@@ -1,24 +1,23 @@
-
-**Dataset Overview**
+## Dataset Overview
 This dataset contains detailed records of used car sales from various locations in the United States. It provides insights into the specifics of vehicles that have been sold, including their make, model, year, and other significant attributes. The data can be useful for analyses related to automotive sales trends, vehicle valuation, and market behavior.
 
-**Columns Description
-Year: The manufacture year of the vehicle.
-Make: The manufacturer brand of the vehicle.
-Model: The specific model of the vehicle.
-Trim: The trim level of the vehicle, indicating specific features or modifications.
-Body: The body style of the vehicle (e.g., SUV, Sedan).
-Transmission: The type of transmission installed in the vehicle (e.g., automatic).
-VIN: Vehicle Identification Number, which is a unique identifier for each vehicle.
-State: The U.S. state where the vehicle is registered.
-Condition: A score rating the condition of the vehicle on a scale from 1 to 5.
-Odometer: The total mileage that the vehicle has accumulated.
-Color: The exterior color of the vehicle.
-Interior: The color and type of the vehicle's interior.
-Seller: The organization or entity that sold the vehicle.
-MMR: The Manheim Market Report value, which represents the wholesale price of the vehicle at auction.
-Selling Price: The price at which the vehicle was sold.
-Sale Date: The date and time when the vehicle was sold.
+## Columns Description
+- **Year**: The manufacture year of the vehicle.
+- **Make**: The manufacturer brand of the vehicle.
+- **Model**: The specific model of the vehicle.
+- **Trim**: The trim level of the vehicle, indicating specific features or modifications.
+- **Body**: The body style of the vehicle (e.g., SUV, Sedan).
+- **Transmission**: The type of transmission installed in the vehicle (e.g., automatic).
+- **VIN**: Vehicle Identification Number, which is a unique identifier for each vehicle.
+- **State**: The U.S. state where the vehicle is registered.
+- **Condition**: A score rating the condition of the vehicle on a scale from 1 to 5.
+- **Odometer**: The total mileage that the vehicle has accumulated.
+- **Color**: The exterior color of the vehicle.
+- **Interior**: The color and type of the vehicle's interior.
+- **Seller**: The organization or entity that sold the vehicle.
+- **MMR**: The Manheim Market Report value, which represents the wholesale price of the vehicle at auction.
+- **Selling Price**: The price at which the vehicle was sold.
+- **Sale Date**: The date and time when the vehicle was sold.
 
-Accessing the Dataset
-The dataset is available for download at the following link: https://docs.google.com/spreadsheets/d/1BCfrYY6Wa27i_avwrK0b3TWGzf9dJsVL5VMKGT0-T9E/edit?usp=sharing
+## Accessing the Dataset
+The dataset is available for download at the following link: [Download Dataset](https://docs.google.com/spreadsheets/d/1BCfrYY6Wa27i_avwrK0b3TWGzf9dJsVL5VMKGT0-T9E/edit?usp=sharing)

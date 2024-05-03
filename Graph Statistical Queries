@@ -1,0 +1,17 @@
+Graph Statistics Queries:
+
+Total Number of Nodes by Type: To count how many nodes there are for each entity type (Vehicles, Sellers, States).
+Number of Isolated Nodes by Type: To identify nodes that do not have any incoming or outgoing relationships.
+Number of Total Relationships by Type: To count different types of relationships (SOLD BY, SELLS, OPERATES IN, etc.).
+Number of Vehicles Sold by Each Seller: To determine how many vehicles each seller has sold.
+Number of Sellers Operating in Each State: To count the number of sellers active in each state.
+Average Selling Price of Vehicles: To calculate the mean selling price across all vehicle sales.
+Vehicles with Selling Price Above and Below the MMR: To compare selling prices against the Manheim Market Report value.
+Most Common Vehicle Makes: To identify the most frequently sold makes of vehicles.
+Distribution of Vehicle Conditions: To analyze the distribution of vehicle conditions (rating scale).
+Vehicle Distribution by Year: To see how vehicle sales are distributed across different manufacture years.
+Price Range Analysis: To examine the range and distribution of selling prices.
+Frequency of Vehicle Colors: To find out how common each color is among sold vehicles.
+Seller Performance Over Time: To evaluate changes in sales performance of sellers over time.
+Geographical Distribution of Sales: To understand the sales distribution across different states.
+Relationship Density: To analyze the density of relationships in the graph.

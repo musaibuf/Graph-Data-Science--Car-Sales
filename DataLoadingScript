@@ -1,0 +1,57 @@
+// Create Vehicles, Sellers, and States
+LOAD CSV WITH HEADERS FROM 'file:///car_prices.csv' AS row
+
+// Create Vehicles
+CREATE (:Vehicle {
+    year: toInteger(row.year),
+    make: row.make,
+    model: row.model,
+    trim: row.trim,
+    body: row.body,
+    transmission: row.transmission,
+    vin: row.vin,
+    color: row.color,
+    interior: row.interior,
+    condition: toInteger(row.condition),
+    odometer: toInteger(row.odometer),
+    mmr: toInteger(row.mmr),
+    selling_price: toInteger(row.sellingprice),
+    sale_date: datetime(row.saledate)
+})
+
+// Create Sellers
+MERGE (s:Seller { name: row.seller })
+
+// Create States
+MERGE (st:State { name: row.state })
+
+// Create Relationships
+WITH row
+MATCH (v:Vehicle { vin: row.vin })
+MATCH (s:Seller { name: row.seller })
+MERGE (v)-[:SOLD_BY]->(s)
+
+WITH row
+MATCH (v:Vehicle { vin: row.vin })
+MATCH (st:State { name: row.state })
+MERGE (v)-[:SOLD_IN]->(st)
+
+WITH row
+MATCH (s:Seller { name: row.seller })
+MATCH (st:State { name: row.state })
+MERGE (s)-[:OPERATES_IN]->(st)
+
+WITH row
+MATCH (s:Seller { name: row.seller })
+MATCH (st:State { name: row.state })
+MERGE (st)-[:HAS_SELLER]->(s)
+
+WITH row
+MATCH (s:Seller { name: row.seller })
+MATCH (v:Vehicle { vin: row.vin })
+MERGE (s)-[:SELLS]->(v)
+
+WITH row
+MATCH (st:State { name: row.state })
+MATCH (v:Vehicle { vin: row.vin })
+MERGE (st)-[:SELLS_IN]->(v)

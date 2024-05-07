@@ -10,11 +10,27 @@ The project explores the relationships between sellers and vehicle sales across 
 
 ## Structure
 
-- `LP.py`: Python script for link prediction analysis.
-- `requirements.txt`: Required Python libraries.
-- `Neo4jSetup.cypher`: Cypher queries for setting up the Neo4j database.
-- `DataModel`: Folder containing the data model and sample data.
+- **Data Model**
+  - `Data Model.jpeg` - Contains the data model diagram.
+  
+- **Data Loading Script**
+  - `DataLoadingScript` - Script for loading data into the database.
 
+- **DataSet**
+  - `DataSet` - The dataset used in this project.
+
+- **Graph Analytical Queries**
+  - `Graph Analytical Queries` - Contains queries for graph analytics.
+  
+- **Graph Analytical Snippets**
+  - `Graph Analytical Snippets.pdf` - PDF containing snippets of graph analytical queries.
+
+- **Graph Statistical Queries**
+  - `Graph Statistical Queries` – Contains statistical queries for graphs.
+  
+- **Graph Statistical Snippets**
+  – `Graph Statistical Snippets.pdf` – PDF containing snippets of graph statistical queries.
+  
 ## Setup Instructions
 
 ### Prerequisites

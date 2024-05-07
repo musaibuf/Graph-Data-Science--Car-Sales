@@ -45,3 +45,12 @@ The project explores the relationships between sellers and vehicle sales across 
    ```bash
    git clone https://github.com/yourusername/vehicle-sales-prediction.git
    cd vehicle-sales-prediction
+
+### Install Dependencies:
+pip install pandas neo4j sklearn imblearn joblib
+
+### Run the Script:
+python color_prediction.py
+
+# Color Prediction
+The `color_prediction.py` file predicts the color of a vehicle based on its node embeddings in a Neo4j graph database. The code uses a RandomForestClassifier model for the prediction. The script fetches the vehicle embeddings and colors from the database, preprocesses the data, splits the data into features and target, oversamples minority classes using RandomOverSampler, splits the data into training and testing datasets, creates and trains a RandomForestClassifier model, evaluates the model with a classification report, saves the trained model for later use, and predicts the color of a specific vehicle using a valid embedding vector from Neo4j.

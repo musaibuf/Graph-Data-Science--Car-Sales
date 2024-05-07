@@ -1,1 +1,266 @@
+= Vehicle Sales Network Analysis and Prediction
+:neo4j-version: 4.0
+:tags: domain:vehicle-sales, use-case:market-analysis
 
+This interactive Neo4j graph tutorial demonstrates vehicle sales network analysis and prediction.
+
+*Table of Contents*
+
+* *Introduction*
+** <<introduction_to_project, Introduction to Project>>
+* *Database Setup*
+** <<data_loading_script, Data Loading Script>>
+* *Graph Analytics Queries*
+** <<information_travel_through_network, Information Travel Through Network>>
+** <<influential_nodes_in_information_spread, Influential Nodes in Information Spread>>
+** <<node_interaction_analysis, Node Interaction Analysis>>
+** <<graph_network_patterns, Graph Network Patterns>>
+** <<path_finding_in_graph, Path Finding in the Graph>>
+* *Machine Learning Implementation*
+** <<node_classification_and_prediction, Node Classification and Prediction>>
+* *Conclusion*
+
+== Introduction to Project
+
+The vehicle sales analysis project involves constructing a graph database using Neo4j to model and analyze vehicle sales data, focusing on link prediction and node classification through machine learning techniques.
+
+== Data Loading Script
+
+To populate the graph database with relevant data, this Cypher script loads vehicles, sellers, and states and establishes relationships between them.
+
+----
+// Create Vehicles, Sellers, and States
+LOAD CSV WITH HEADERS FROM 'file:///car_prices.csv' AS row
+
+// Create Vehicles
+CREATE (:Vehicle {
+    year: toInteger(row.year),
+    make: row.make,
+    model: row.model,
+    trim: row.trim,
+    body: row.body,
+    transmission: row.transmission,
+    vin: row.vin,
+    color: row.color,
+    interior: row.interior,
+    condition: toInteger(row.condition),
+    odometer: toInteger(row.odometer),
+    mmr: toInteger(row.mmr),
+    selling_price: toInteger(row.sellingprice),
+    sale_date: datetime(row.saledate)
+})
+
+// Create Sellers
+MERGE (s:Seller { name: row.seller })
+
+// Create States
+MERGE (st:State { name: row.state })
+
+// Create Relationships
+WITH row
+MATCH (v:Vehicle { vin: row.vin })
+MATCH (s:Seller { name: row.seller })
+MERGE (v)-[:SOLD_BY]->(s)
+
+WITH row
+MATCH (v:Vehicle { vin: row.vin })
+MATCH (st:State { name: row.state })
+MERGE (v)-[:SOLD_IN]->(st)
+
+WITH row
+MATCH (s:Seller { name: row.seller })
+MATCH (st:State { name: row.state })
+MERGE (s)-[:OPERATES_IN]->(st)
+
+WITH row
+MATCH (s:Seller { name: row.seller })
+MATCH (st:State { name: row.state })
+MERGE (st)-[:HAS_SELLER]->(s)
+
+WITH row
+MATCH (s:Seller { name: row.seller })
+MATCH (v:Vehicle { vin: row.vin })
+MERGE (s)-[:SELLS]->(v)
+
+WITH row
+MATCH (st:State { name: row.state })
+MATCH (v:Vehicle { vin: row.vin })
+MERGE (st)-[:SELLS_IN]->(v)
+----
+
+== Graph Statistical Queries
+=== Total Number of Nodes by Type
+----
+MATCH (v:Vehicle) RETURN COUNT(v) AS TotalVehicles
+MATCH (s:Seller) RETURN COUNT(s) AS TotalSellers
+MATCH (st:State) RETURN COUNT(st) AS TotalStates
+----
+
+Total Relationships by Type
+----
+MATCH ()-[r:SOLD_BY]->() RETURN COUNT(r) AS TotalSoldByRelationships
+MATCH ()-[r:SELLS]->() RETURN COUNT(r) AS TotalSellsRelationships
+MATCH ()-[r:OPERATES_IN]->() RETURN COUNT(r) AS TotalOperatesInRelationships
+MATCH ()-[r:HAS_SELLER]->() RETURN COUNT(r) AS TotalHasSellerRelationships
+----
+Most Common Vehicle Makes
+----
+MATCH (s:Seller)-[:SELLS]->(v:Vehicle)
+RETURN s.name AS Seller, v.make AS Make, COUNT(*) AS Count
+ORDER BY Count DESC
+LIMIT 10
+----
+== Graph Analytics Queries
+
+=== Information Travel Through Network
+Find the most frequently traveled paths by vehicles moving from sellers to states.
+----
+MATCH (v:Vehicle)-[:SOLD_IN]->(st:State)
+RETURN v, st
+ORDER BY v.year DESC
+----
+Influential Nodes in Information Spread
+
+Rank sellers by the number of vehicles they have sold.
+----
+MATCH (s:Seller)-[:SELLS]->(v:Vehicle)
+RETURN s, count(v) AS VehicleCount
+ORDER BY VehicleCount DESC
+----
+
+Node Interaction Analysis
+Identify which states have the most vehicles sold by a specific seller.
+----
+MATCH (s:Seller)-[:SELLS]->(v:Vehicle)-[:SOLD_IN]->(st:State)
+RETURN st.name AS State, count(v) AS VehicleCount
+ORDER BY VehicleCount DESC
+----
+
+Node Centrality Analysis
+
+Find nodes with the most influence using Degree Centrality.
+----
+CALL gds.degree.stream('myGraphProjection')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).name AS Node, score AS DegreeCentrality
+ORDER BY DegreeCentrality DESC
+----
+
+Community Detection
+Identify communities within the graph using the following Louvain algorithm.
+----
+CALL gds.louvain.stream('myGraphProjection')
+YIELD nodeId, communityId
+RETURN gds.util.asNode(nodeId).name AS Node, communityId
+ORDER BY communityId
+----
+
+== Node Classification and Prediction
+
+Machine Learning Implementation
+
+This section provides information on node classification and prediction using machine learning.
+----
+CALL gds.graph.project('vehicleGraph', ['Vehicle', 'Seller', 'State'], {
+  SOLD_BY: {type: 'SOLD_BY'},
+  SOLD_IN: {type: 'SOLD_IN'},
+  SELLS: {type: 'SELLS'},
+  OPERATES_IN: {type: 'OPERATES_IN'},
+  HAS_SELLER: {type: 'HAS_SELLER'},
+  SELLS_IN: {type: 'SELLS_IN'}
+})
+
+CALL gds.fastRP.write('vehicleGraph', {
+  embeddingDimension: 128,
+  writeProperty: 'embedding'
+})
+
+MATCH (v:Vehicle)
+RETURN v.vin AS id, v.embedding AS embedding, v.color AS color
+----
+The following Python script fetches vehicle embeddings from Neo4j, processes them, and uses a RandomForest model to predict vehicle color:
+----
+# Import necessary libraries
+import pandas as pd
+from neo4j import GraphDatabase
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+from imblearn.over_sampling import RandomOverSampler
+import joblib
+
+# Function to fetch node embeddings and labels from Neo4j
+def fetch_embeddings_from_neo4j(uri, user, password, query):
+    driver = GraphDatabase.driver(uri, auth=(user, password))
+    with driver.session() as session:
+        result = session.run(query)
+        data = result.data()
+    driver.close()
+    return pd.DataFrame(data)
+
+# Function to fetch a specific embedding from Neo4j
+def fetch_single_embedding(uri, user, password, vin):
+    driver = GraphDatabase.driver(uri, auth=(user, password))
+    query = f"""
+    MATCH (v:Vehicle {{ vin: '{vin}' }})
+    RETURN v.embedding AS embedding
+    """
+    with driver.session() as session:
+        result = session.run(query)
+        data = result.single()
+    driver.close()
+    return data['embedding'] if data else None
+
+# Neo4j connection settings
+uri = "bolt://localhost:7687"
+user = "neo4j"
+password = "12345678"
+
+# Query to fetch the vehicle embeddings and colors
+query = """
+MATCH (v:Vehicle)
+RETURN v.vin AS id, v.embedding AS embedding, v.color AS color
+"""
+
+# Fetching data from Neo4j
+df = fetch_embeddings_from_neo4j(uri, user, password, query)
+
+# Expanding the embeddings from list to columns
+embeddings_df = pd.DataFrame(df['embedding'].tolist())
+embeddings_df['color'] = df['color']
+
+# Cleaning the data to remove null colors
+embeddings_df = embeddings_df.dropna(subset=['color'])
+
+# Splitting the data into features (X) and target (y)
+X = embeddings_df.drop('color', axis=1)
+y = embeddings_df['color']
+
+# Using RandomOverSampler to oversample minority classes
+oversampler = RandomOverSampler(random_state=42)
+X_resampled, y_resampled = oversampler.fit_resample(X, y)
+
+# Splitting into training and testing datasets
+X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
+
+# Creating and training a RandomForestClassifier model
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# Evaluating the model with a classification report
+y_pred = model.predict(X_test)
+print(classification_report(y_test, y_pred, zero_division=1))
+
+# Saving the trained model for later use
+joblib.dump(model, 'best_vehicle_color_model.joblib')
+
+# Function for new predictions
+def predict_vehicle_color(model, new_embedding):
+    return model.predict([new_embedding])
+
+# Predicting the color of a specific vehicle using a valid embedding vector from Neo4j
+vin_to_predict = '5xyktca69fg
+----
+== Conclusion
+
+Graph analysis and machine learning offer valuable insights into vehicle sales networks. They help predict potential vehicle sales, understand market dynamics, and detect patterns that enhance data-driven decisions.

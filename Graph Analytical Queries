@@ -1,0 +1,35 @@
+## Graph Analytics Queries
+
+1. **Information Travel Through Network:**  
+   Find the most frequently traveled paths by vehicles moving from sellers to states.
+
+2. **Influential Nodes in Information Spread:**  
+   - Rank sellers by the number of vehicles they have sold.  
+   - Identify states that have sold the most vehicles, thereby influencing the spread of market trends and vehicle popularity.
+
+3. **Node Interaction Analysis:**  
+   Identify which states have the most vehicles sold by a specific seller.
+
+4. **Graph Network Patterns:**  
+   Identify patterns, such as which vehicle makes are most commonly sold by each seller.
+
+5. **Path Finding in the Graph:**  
+   Find the shortest path between two nodes.
+
+6. **Node Centrality:**  
+   Identify nodes with the most influence using Degree Centrality.
+
+7. **Community Detection:**  
+   Detect communities within the graph using the Louvain algorithm.
+
+8. **Influence Spread (PageRank):**  
+   Identify which sellers or states have the most influence over the vehicle sales network.
+
+9. **Interaction Patterns (Degree Centrality):**  
+   Quantify the number of sales interactions for each seller or vehicle.
+
+10. **Strongly Connected Components:**  
+    Find clusters or groups of nodes that frequently interact with each other.
+
+11. **Node Similarity:**  
+    Use node similarity algorithms to identify nodes sharing similar characteristics or connectivity patterns. This can help identify sellers who operate similarly or vehicles that often follow similar sales patterns.
